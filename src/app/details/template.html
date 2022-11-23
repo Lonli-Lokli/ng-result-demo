@@ -1,0 +1,17 @@
+<tui-tabs-with-more
+  class="container details"
+  (activeItemIndexChange)="onActiveItemIndexChange($event)"
+>
+  <button *tuiItem tuiTab>
+    <tui-svg src="tuiIconCard" class="tui-space_right-2"></tui-svg>
+    Commit
+  </button>
+  <button *tuiItem tuiTab>
+    <tui-svg src="tuiIconCopy" class="tui-space_right-2"></tui-svg>
+    Changes
+  </button>
+  <button *tuiItem tuiTab>
+    <tui-svg src="tuiIconEyeOpen" class="tui-space_right-2"></tui-svg>
+    File Tree
+  </button>
+</tui-tabs-with-more>
