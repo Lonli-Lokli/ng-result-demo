@@ -1,0 +1,39 @@
+<tui-tabs-with-more class="container details">
+<button *tuiItem tuiTab (click)="changeTab('commit')">
+  <tui-svg src="tuiIconCard" class="tui-space_right-2"></tui-svg>
+  Commit
+</button>
+<button *tuiItem tuiTab (click)="changeTab('changes')">
+  <tui-svg src="tuiIconCopy" class="tui-space_right-2"></tui-svg>
+  Changes
+</button>
+<button *tuiItem tuiTab (click)="changeTab('file-tree')" disabled>
+  <tui-svg src="tuiIconEyeOpen" class="tui-space_right-2"></tui-svg>
+  File Tree
+</button>
+</tui-tabs-with-more>
+<ng-container [ngSwitch]="mode">
+<section class="commit" *ngSwitchCase="'commit'">
+  <ng-container *ngTemplateOutlet="commit"></ng-container>
+</section>
+<section class="changes" *ngSwitchCase="'changes'">
+  <ng-container *ngTemplateOutlet="changes"></ng-container>
+</section>
+<section class="file-tree" *ngSwitchCase="'file-tree'">
+  <ng-container *ngTemplateOutlet="filetree"></ng-container>
+</section>
+
+<div *ngSwitchCaseDefault>Unknown mode enabled '{{mode}}'</div>
+</ng-container>
+
+<ng-template #commit>
+<my-commit></my-commit>
+</ng-template>
+
+<ng-template #changes>
+<my-changes></my-changes>
+</ng-template>
+
+<ng-template #filetree>
+<div>File Tree</div>
+</ng-template>

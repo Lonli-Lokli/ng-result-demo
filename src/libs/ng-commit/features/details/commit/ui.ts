@@ -1,22 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Commit } from '../types';
-import { DetailsService } from './data-access';
+import { Commit } from '../../../typings';
+import { DetailsService } from '../data.service';
 
 @Component({
-  selector: `my-details`,
+  selector: `my-commit`,
   templateUrl: `./template.html`,
   styleUrls: ['./styles.less'],
-  providers: [DetailsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DetailsComponent {
+export class CommitComponent {
   public commit$: Observable<Commit>;
-
   constructor(private svc: DetailsService) {
     this.commit$ = this.svc.activeCommit$;
-  }
-  onActiveItemIndexChange(index: number) {
-    console.log(index);
   }
 }

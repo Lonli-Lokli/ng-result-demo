@@ -1,0 +1,27 @@
+<tui-input #filter (keyup)="onFilterChanged(filter.value)">Filter</tui-input>
+
+<tui-tree
+  *ngFor="let item of ((node$ | async)?.children ?? [])"
+  [tuiTreeController]="true"
+  [value]="item"
+  [content]="content"
+  [childrenHandler]="handler"
+></tui-tree>
+
+<ng-template #content let-item>
+  <ng-container *ngIf="{activeNodeData: activeNodeData$ | async} as $">
+    <tui-svg
+      *ngIf="item.data === $.activeNodeData && item.data !== undefined"
+      src="tuiIconCheck"
+    ></tui-svg>
+    <span
+      tuiIconButton
+      icon=""
+      class="tree-item"
+      [class.active]="item.data === $.activeNodeData && item.data !== undefined"
+      (click)="onSelect(item.data)"
+    >
+      {{ item.text }}
+    </span>
+  </ng-container>
+</ng-template>

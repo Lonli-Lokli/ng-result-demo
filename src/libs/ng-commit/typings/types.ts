@@ -29,6 +29,20 @@ export type Commit = {
   parents: Parent[];
 } & Taggy<'commit'>;
 
+export type CommitChanges = {
+  sha:          string;
+  node_id:      string;
+  commit:       Commit;
+  url:          string;
+  html_url:     string;
+  comments_url: string;
+  author:       Author;
+  committer:    Author;
+  parents:      Parent[];
+  stats:        Stats;
+  files:        FileInfo[];
+} & Taggy<'changes'>;
+
 export interface Author {
   login: string;
   id: number;
@@ -46,12 +60,8 @@ export interface Author {
   repos_url: string;
   events_url: string;
   received_events_url: string;
-  type: Type;
+  type: string;
   site_admin: boolean;
-}
-
-export enum Type {
-  User = 'User',
 }
 
 export interface CommitInfo {
@@ -67,7 +77,7 @@ export interface CommitInfo {
 export interface CommitAuthor {
   name: string;
   email: string;
-  date: Date;
+  date: string;
 }
 
 export interface Tree {
@@ -77,13 +87,9 @@ export interface Tree {
 
 export interface Verification {
   verified: boolean;
-  reason: Reason;
+  reason: string;
   signature: null;
   payload: null;
-}
-
-export enum Reason {
-  Unsigned = 'unsigned',
 }
 
 export interface Parent {
@@ -91,3 +97,23 @@ export interface Parent {
   url: string;
   html_url: string;
 }
+export interface FileInfo {
+  sha:          string;
+  filename:     string;
+  status:       string;
+  additions:    number;
+  deletions:    number;
+  changes:      number;
+  blob_url:     string;
+  raw_url:      string;
+  contents_url: string;
+  patch:        string;
+}
+
+
+export interface Stats {
+  total:     number;
+  additions: number;
+  deletions: number;
+}
+

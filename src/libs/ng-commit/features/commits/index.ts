@@ -1,0 +1,1 @@
+export { CommitsComponent } from './ui';

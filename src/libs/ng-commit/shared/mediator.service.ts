@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/internal/operators/filter';
-import { Branch, Commit, Tag } from './types';
+import { Commit, Tag, Branch } from '../typings';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class MediatorService {
   private activeCommitSubj = new BehaviorSubject<Commit | null>(null);
   private activeBranchOrTagSubj = new BehaviorSubject<Branch | Tag | null>(
@@ -17,8 +19,10 @@ export class MediatorService {
     .asObservable()
     .pipe(filter((elem): elem is Branch | Tag => elem !== null));
 
-  selectCommit(commit: Commit) {
-    this.activeCommitSubj.next(commit);
+  selectCommit(commit?: Commit) {
+    if (commit) {
+      this.activeCommitSubj.next(commit);
+    }
   }
 
   selectBranchOrTag(entity: Branch | Tag) {

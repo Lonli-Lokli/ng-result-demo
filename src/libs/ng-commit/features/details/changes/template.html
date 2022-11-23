@@ -1,0 +1,5 @@
+<div
+  *ngIf="{activeCommitDiff: activeCommitDiff$ | async, changes: changes$ | async} as $"
+>
+  <my-diff [diff]="$.activeCommitDiff"></my-diff>
+</div>

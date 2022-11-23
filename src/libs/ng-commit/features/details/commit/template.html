@@ -1,0 +1,65 @@
+<div *ngIf="commit$ | async as commit">
+  <tui-island>
+    <div class="commiters">
+      <div class="commit-author">
+        <p class="tui-island__category">Author</p>
+        <ng-container
+          *ngTemplateOutlet="info; context: {person: commit.author, commit: commit.commit.author}"
+        ></ng-container>
+        <div class="commit-info">
+          <span class="system-text">SHA</span>
+          <span>
+            <a [href]="commit.html_url" target="_blank" class="link">
+              {{commit.sha}}
+            </a>
+          </span>
+        </div>
+        <div class="commit-info">
+          <span class="system-text">PARENTS</span>
+          <span *ngFor="let parent of commit.parents">
+            <a [href]="parent.html_url" target="_blank" class="link">
+              {{parent.sha}}
+            </a>
+          </span>
+        </div>
+      </div>
+      <div
+        class="commit-author"
+        *ngIf="commit.committer && commit.author.id !== commit.committer.id"
+      >
+        <p class="tui-island__category">Committer</p>
+        <ng-container
+          *ngTemplateOutlet="info; context: {person: commit.committer, commit: commit.commit.committer}"
+        ></ng-container>
+      </div>
+    </div>
+
+    <div class="tui-island__content">
+      <div class="break-text">{{commit.commit.message}}</div>
+    </div>
+  </tui-island>
+</div>
+
+<ng-template #info let-person="person" let-commit="commit">
+  <div class="user-info">
+    <tui-avatar
+      new
+      size="xl"
+      [avatarUrl]="person.avatar_url"
+      class="tui-space_vertical-1"
+    >
+    </tui-avatar>
+
+    <div class="user-info-col">
+      <span>
+        <a [href]="person.html_url" target="_blank" class="link">
+          <strong>{{commit.name}}</strong></a
+        >
+      </span>
+      <span class="system-text">{{commit.email}}</span>
+      <div class="system-text">
+        {{commit.date | date:'dd MMMM YYYY HH:mm:ss ZZZZ'}}
+      </div>
+    </div>
+  </div>
+</ng-template>

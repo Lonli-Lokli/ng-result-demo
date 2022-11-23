@@ -1,19 +1,29 @@
 import './polyfills';
 
-import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { provideHttpClient } from '@angular/common/http';
 
-import {AppModule} from './app/app.module';
+import { importProvidersFrom } from '@angular/core';
+import {
+  ALL_TAIGA_UI_MODULES,
+  ROOT_MODULES,
+} from './app/@stackblitz/all-taiga-modules';
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .then(ref => {
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(),
+    importProvidersFrom([...ROOT_MODULES, ...ALL_TAIGA_UI_MODULES]),
+  ],
+})
+  .then((ref) => {
     // Stackblitz: Ensure Angular destroys itself on hot reloads.
-    if (window['ngRef']) {
-      window['ngRef'].destroy();
+    if (window['ngRef' as any]) {
+      (window['ngRef' as any] as any).destroy();
     }
 
-    window['ngRef'] = ref;
+    (window['ngRef' as any] as any) = ref;
 
     // Otherwise, log the boot error
   })
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));
