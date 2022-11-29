@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CommitChanges } from '../../../typings';
+import { ApiError } from '../../../shared';
 import { DetailsService } from '../data.service';
+import { Result } from '@lonli-lokli/ts-result';
 
 @Component({
   selector: `my-changes`,
@@ -10,8 +12,8 @@ import { DetailsService } from '../data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangesComponent {
-  public changes$: Observable<CommitChanges>;
-  public activeCommitDiff$: Observable<string>;
+  public changes$: Observable<Result<ApiError, CommitChanges>>;
+  public activeCommitDiff$: Observable<Result<ApiError, string>>;
   constructor(private svc: DetailsService) {
     this.changes$ = this.svc.activeChanges$;
     this.activeCommitDiff$ = this.svc.activeCommitDiff$;

@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map, startWith } from 'rxjs';
 import { Commit } from '../../../typings';
+import { ApiError } from '../../../shared';
 import { DetailsService } from '../data.service';
+import { initial, success, Result } from '@lonli-lokli/ts-result';
 
 @Component({
   selector: `my-commit`,
@@ -10,8 +12,11 @@ import { DetailsService } from '../data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommitComponent {
-  public commit$: Observable<Commit>;
+  public commit$: Observable<Result<ApiError, Commit>>;
   constructor(private svc: DetailsService) {
-    this.commit$ = this.svc.activeCommit$;
+    this.commit$ = this.svc.activeCommit$.pipe(
+      map((commit) => success(commit)),
+      startWith(initial())
+    );
   }
 }

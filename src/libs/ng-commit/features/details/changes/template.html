@@ -1,5 +1,10 @@
-<div
+<ng-container
   *ngIf="{activeCommitDiff: activeCommitDiff$ | async, changes: changes$ | async} as $"
 >
-  <my-diff [diff]="$.activeCommitDiff"></my-diff>
-</div>
+  <ll-result [data]="$.activeCommitDiff" initialText="Please select commit to view Details">
+    <ng-container *ifSuccess="$.activeCommitDiff; let ok">
+      <my-diff [diff]="ok"></my-diff>
+    </ng-container>
+    <span *ll-failure>FaiL!!!</span>
+  </ll-result>
+</ng-container>

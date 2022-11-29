@@ -12,13 +12,14 @@ import {
 import { compareVersions, validate } from 'compare-versions';
 import { GithubService } from '../../data-access';
 import { Branch, Tag, ANGULAR_REPO } from '../../typings';
-import { MediatorService } from '../../shared';
+import { MediatorService, tapEither, ApiError, mapEither } from '../../shared';
+import { Result, pending, fromEither, success } from '@lonli-lokli/ts-result';
 
 export interface TreeNode {
   readonly text: string;
   readonly icon?: string;
   readonly children?: readonly TreeNode[];
-  readonly data?: Tag | Branch;
+  readonly data?: Result<ApiError, Tag | Branch>;
 }
 
 @Injectable()
@@ -33,7 +34,7 @@ export class NavigationService {
       switchMap(() =>
         combineLatest({
           branches: this.api.getAllBranches(ANGULAR_REPO).pipe(
-            map((branches) => [
+            mapEither((branches) => [
               {
                 name: 'main',
                 commit: {
@@ -49,12 +50,15 @@ export class NavigationService {
                     : -1
                 )
                 .reverse(),
-            ])
+            ]),
+            tapEither((branches) =>
+              this.mediator.selectBranchOrTag(branches[0])
+            ),
+            map(fromEither)
           ),
-          tags: this.api.getAllTags(ANGULAR_REPO),
+          tags: this.api.getAllTags(ANGULAR_REPO).pipe(map(fromEither)),
         })
       ),
-      tap(({ branches }) => this.mediator.selectBranchOrTag(branches[0])),
       map(({ branches, tags }) => ({
         text: 'Topmost',
         children: [
@@ -82,14 +86,23 @@ export class NavigationService {
 
   private createTopmostNode(
     name: string,
-    refs: Branch[] | Tag[] = [] as Branch[]
+    refs?: Result<ApiError, Branch[] | Tag[]>
   ) {
     return {
       text: name,
-      children: refs.map((ref) => ({
-        text: ref.name,
-        data: ref,
-      })),
+      children: !refs
+        ? undefined
+        : refs.isSuccess()
+        ? refs.value.map((ref) => ({
+            text: ref.name,
+            data: success(ref),
+          }))
+        : [
+            {
+              text: '',
+              data: refs.map(() => null! as Branch),
+            },
+          ],
     };
   }
 }

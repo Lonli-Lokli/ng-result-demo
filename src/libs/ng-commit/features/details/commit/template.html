@@ -1,44 +1,49 @@
-<div *ngIf="commit$ | async as commit">
-  <tui-island>
-    <div class="commiters">
-      <div class="commit-author">
-        <p class="tui-island__category">Author</p>
-        <ng-container
-          *ngTemplateOutlet="info; context: {person: commit.author, commit: commit.commit.author}"
-        ></ng-container>
-        <div class="commit-info">
-          <span class="system-text">SHA</span>
-          <span>
-            <a [href]="commit.html_url" target="_blank" class="link">
-              {{commit.sha}}
-            </a>
-          </span>
+<ll-result
+  [data]="commit$ | async"
+  initialText="Please select commit to view Details"
+>
+  <div *ifSuccess="commit$ | async; let ok">
+    <tui-island>
+      <div class="commiters">
+        <div class="commit-author">
+          <p class="tui-island__category">Author</p>
+          <ng-container
+            *ngTemplateOutlet="info; context: {person: ok.author, commit: ok.commit.author}"
+          ></ng-container>
+          <div class="commit-info">
+            <span class="system-text">SHA</span>
+            <span>
+              <a [href]="ok.html_url" target="_blank" class="link">
+                {{ok.sha}}
+              </a>
+            </span>
+          </div>
+          <div class="commit-info">
+            <span class="system-text">PARENTS</span>
+            <span *ngFor="let parent of ok.parents">
+              <a [href]="parent.html_url" target="_blank" class="link">
+                {{parent.sha}}
+              </a>
+            </span>
+          </div>
         </div>
-        <div class="commit-info">
-          <span class="system-text">PARENTS</span>
-          <span *ngFor="let parent of commit.parents">
-            <a [href]="parent.html_url" target="_blank" class="link">
-              {{parent.sha}}
-            </a>
-          </span>
+        <div
+          class="commit-author"
+          *ngIf="ok.committer && ok.author.id !== ok.committer.id"
+        >
+          <p class="tui-island__category">Committer</p>
+          <ng-container
+            *ngTemplateOutlet="info; context: {person: ok.committer, commit: ok.commit.committer}"
+          ></ng-container>
         </div>
       </div>
-      <div
-        class="commit-author"
-        *ngIf="commit.committer && commit.author.id !== commit.committer.id"
-      >
-        <p class="tui-island__category">Committer</p>
-        <ng-container
-          *ngTemplateOutlet="info; context: {person: commit.committer, commit: commit.commit.committer}"
-        ></ng-container>
-      </div>
-    </div>
 
-    <div class="tui-island__content">
-      <div class="break-text">{{commit.commit.message}}</div>
-    </div>
-  </tui-island>
-</div>
+      <div class="tui-island__content">
+        <div class="break-text">{{ok.commit.message}}</div>
+      </div>
+    </tui-island>
+  </div>
+</ll-result>
 
 <ng-template #info let-person="person" let-commit="commit">
   <div class="user-info">

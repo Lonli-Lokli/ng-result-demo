@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Branch, Commit, Tag } from '../../typings';
+import { ApiError } from '../../shared';
 import { CommitsService } from './data.service';
+import { Result } from '@lonli-lokli/ts-result';
 
 @Component({
   selector: `my-commits`,
@@ -11,7 +13,7 @@ import { CommitsService } from './data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommitsComponent {
-  public commits$: Observable<Commit[]>;
+  public commits$: Observable<Result<ApiError, Commit[]>>;
   public activeCommit$: Observable<Commit>;
   public activeBranchOrTag$: Observable<Branch | Tag>;
 
