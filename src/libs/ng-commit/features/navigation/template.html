@@ -23,10 +23,11 @@
           [class.active]="ok === $.activeNodeData && ok !== undefined"
           (click)="onSelect($any(ok))"
         >
+          {{ item.text }}
         </span>
       </ng-container>
       <span *llFailure="let fail">{{fail}}</span>
     </ll-result>
-    {{ item.text }}
+    <span *ngIf="!item.data"> {{ item.text }}</span>
   </ng-template>
 </ng-container>
