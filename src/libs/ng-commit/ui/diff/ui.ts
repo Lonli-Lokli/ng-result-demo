@@ -16,7 +16,7 @@ import * as Diff2Html from 'diff2html';
 })
 export class DiffComponent implements OnChanges {
   @Input()
-  diff: string | null = '';
+  diff: string | null | undefined = '';
 
   public outputHtml = '';
 

@@ -12,13 +12,21 @@ import {
 import { compareVersions, validate } from 'compare-versions';
 import { GithubService } from '../../data-access';
 import { Branch, Tag, ANGULAR_REPO } from '../../typings';
-import { MediatorService } from '../../shared';
+import { mapState, MediatorService } from '../../shared';
+import {
+  HttpRequestState,
+  loadingState,
+  isLoadedState,
+  isLoadingState,
+  loadedState,
+  errorState,
+} from 'ngx-http-request-state';
 
 export interface TreeNode {
   readonly text: string;
   readonly icon?: string;
   readonly children?: readonly TreeNode[];
-  readonly data?: Tag | Branch;
+  readonly data?: HttpRequestState<Tag | Branch>;
 }
 
 @Injectable()
@@ -33,7 +41,7 @@ export class NavigationService {
       switchMap(() =>
         combineLatest({
           branches: this.api.getAllBranches(ANGULAR_REPO).pipe(
-            map((branches) => [
+            mapState((branches) => [
               {
                 name: 'main',
                 commit: {
@@ -54,7 +62,11 @@ export class NavigationService {
           tags: this.api.getAllTags(ANGULAR_REPO),
         })
       ),
-      tap(({ branches }) => this.mediator.selectBranchOrTag(branches[0])),
+      tap(({ branches }) => {
+        if (isLoadedState(branches)) {
+          this.mediator.selectBranchOrTag(branches.value![0]);
+        }
+      }),
       map(({ branches, tags }) => ({
         text: 'Topmost',
         children: [
@@ -82,14 +94,23 @@ export class NavigationService {
 
   private createTopmostNode(
     name: string,
-    refs: Branch[] | Tag[] = [] as Branch[]
-  ) {
+    refs: HttpRequestState<Branch[] | Tag[]> = loadingState<Branch[]>()
+  ): TreeNode {
     return {
       text: name,
-      children: refs.map((ref) => ({
-        text: ref.name,
-        data: ref,
-      })),
+      children: isLoadedState(refs)
+        ? refs.value!.map((ref) => ({
+            text: ref.name,
+            data: loadedState(ref),
+          }))
+        : [
+            {
+              text: '<Unknown>',
+              data: isLoadingState(refs)
+                ? loadingState<Branch | Tag>()
+                : errorState<Branch | Tag>(new Error('failed to load')),
+            },
+          ],
     };
   }
 }

@@ -39,6 +39,7 @@
     "core-js": "^3.26.1",
     "diff2html": "^3.4.22",
     "dompurify": "^2.4.1",
+    "ngx-http-request-state": "^2.0.0",
     "prosemirror-state": "^1.4.2",
     "rxjs": "^7.5.7",
     "text-mask-core": "^5.1.2",

@@ -1,5 +1,17 @@
 <div
   *ngIf="{activeCommitDiff: activeCommitDiff$ | async, changes: changes$ | async} as $"
 >
-  <my-diff [diff]="$.activeCommitDiff"></my-diff>
+  <div *ngIf="$.changes?.value">
+    Stats: {{$.changes?.value?.stats?.additions ?? 0}} additions,
+    {{$.changes?.value?.stats?.deletions ?? 0}} deletions
+    ({{$.changes?.value?.stats?.total ?? 0}} total)
+  </div>
+  <div *ngIf="$.changes?.isLoading">Loading...</div>
+  <div *ngIf="$.changes?.error">Error!!</div>
+
+  <div *ngIf="$.activeCommitDiff?.value">
+    <my-diff [diff]="$.activeCommitDiff?.value"></my-diff>
+  </div>
+  <div *ngIf="$.activeCommitDiff?.isLoading">Loading...</div>
+  <div *ngIf="$.activeCommitDiff?.error">Error!!</div>
 </div>

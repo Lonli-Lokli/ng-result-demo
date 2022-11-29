@@ -10,18 +10,27 @@
 
 <ng-template #content let-item>
   <ng-container *ngIf="{activeNodeData: activeNodeData$ | async} as $">
-    <tui-svg
-      *ngIf="item.data === $.activeNodeData && item.data !== undefined"
-      src="tuiIconCheck"
-    ></tui-svg>
-    <span
-      tuiIconButton
-      icon=""
-      class="tree-item"
-      [class.active]="item.data === $.activeNodeData && item.data !== undefined"
-      (click)="onSelect(item.data)"
+    <ng-container *ngIf="item.isLoading">
+      <span>Loading...</span>
+    </ng-container>
+    <ng-container *ngIf="item.value">
+      <tui-svg
+        *ngIf="item.value.data === $.activeNodeData && item.value.data !== undefined"
+        src="tuiIconCheck"
+      ></tui-svg>
+      <span
+        tuiIconButton
+        icon=""
+        class="tree-item"
+        [class.active]="item.value.data === $.activeNodeData && item.value.data !== undefined"
+        (click)="onSelect(item.value.data)"
+      >
+        {{ item.text }}
+      </span>
+    </ng-container>
+    <ng-container *ngIf="item.error">
+      <span>Errror! {{item.error.message}}</span></ng-container
     >
-      {{ item.text }}
-    </span>
+    {{ item.text }}
   </ng-container>
 </ng-template>

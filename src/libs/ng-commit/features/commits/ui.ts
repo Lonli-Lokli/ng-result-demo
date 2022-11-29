@@ -2,6 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Branch, Commit, Tag } from '../../typings';
 import { CommitsService } from './data.service';
+import {
+  HttpRequestState,
+  isLoadedState,
+  loadedState,
+} from 'ngx-http-request-state';
 
 @Component({
   selector: `my-commits`,
@@ -11,7 +16,7 @@ import { CommitsService } from './data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommitsComponent {
-  public commits$: Observable<Commit[]>;
+  public commits$: Observable<HttpRequestState<Commit[]>>;
   public activeCommit$: Observable<Commit>;
   public activeBranchOrTag$: Observable<Branch | Tag>;
 

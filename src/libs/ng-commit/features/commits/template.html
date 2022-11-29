@@ -1,14 +1,20 @@
 <div>Showing latest commits for {{(activeBranchOrTag$ | async)?.name}}</div>
 <ul class="tui-list tui-list container">
-  <ng-container *ngFor="let commit of commits$ | async">
-    <li
-      class="tui-list__item"
-      *ngIf="{activeCommit: activeCommit$ | async} as $"
-      (click)="selectCommit(commit)"
-      [class.active]="commit == $.activeCommit"
-      class="commit-row"
-    >
-      {{commit.subject}}
-    </li>
+  <ng-container *ngIf="commits$ | async as $">
+    <div *ngIf="$.value">
+      <ng-container *ngFor="let commit of $.value">
+        <li
+          class="tui-list__item"
+          *ngIf="{activeCommit: activeCommit$ | async} as $"
+          (click)="selectCommit(commit)"
+          [class.active]="commit == $.activeCommit"
+          class="commit-row"
+        >
+          {{commit.subject}}
+        </li>
+      </ng-container>
+    </div>
+    <div *ngIf="$.isLoading">Loading...</div>
+    <div *ngIf="$.error">Error!!</div>
   </ng-container>
 </ul>

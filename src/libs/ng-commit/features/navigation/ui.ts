@@ -29,6 +29,7 @@ export class NavigationComponent implements AfterViewInit {
   }
 
   onSelect(row: Branch | Tag) {
+    console.log(row);
     if (row) {
       this.svc.select(row);
     }
